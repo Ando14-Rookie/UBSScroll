@@ -48,6 +48,48 @@ def makePattern(myContainer:str):
 
     return patternCreated
 
+def matchPattern(myPattern:str, currentString:str):
+    myString = ""
+    #Matches the strings
+    pattern = re.compile(r'%s' %myPattern) # Put myPattern into inside '...'
+    #Iterate through the whole sentence to find patterns
+    matches = pattern.finditer(currentString)
+
+    #For debugging, get the match value
+    for match in matches:
+        print("Match parent is " + match[0])
+        #Set match to myString
+        myString = match[0]
+    
+    #If itemString match the string compiled from myPattern, this mean pattern is valid
+    if(myString == currentString):
+        return True
+
+def checkValidity(patternTest: str):
+    validStringState = False
+    invalidStringState = False
+
+    #Loop and match each validString & invalidString with pattern
+    #It must return correct for validstring & false for invalidstring
+    for index in range(min(len(validStrings), len(invalidStrings))):
+        # Use range() to iterate over the shortest 
+        # list's length to avoid index out of range error
+
+        #Check whether pattern is correct 
+        validStringState = matchPattern(myPattern= patternTest, 
+                                        currentString= validStrings[index])
+        invalidStringState = matchPattern(myPattern= patternTest,
+                                          currentString= invalidStrings[index])
+
+    #For debugging
+    print("My final states are " + str(validStringState) + " and %s" %str(invalidStringState))
+    #If both states are true, return the pattern
+    if(validStringState and invalidStrings):
+        return patternTest
+    #If both states are false, return this sentence
+    else:
+        return "Pattern is completely wrong"
+
 #Generate Gree Expression
 def generate_gree_expression(valid_strings, invalid_strings):
     # if not valid_strings or not invalid_strings:
@@ -106,8 +148,6 @@ def generate_gree_expression(valid_strings, invalid_strings):
             container += myString[index]
             print("After 4th type: My container is " + container + " at index: " + str(index))
 
-        
-    
     #If pattern hasn't been made
     if(len(container) != 0):
         print("Container not made yet is " + container)
@@ -118,13 +158,10 @@ def generate_gree_expression(valid_strings, invalid_strings):
     container = ""
     #Lastly add $ in the end
     pattern += "$"
-    
-    # Validate against invalid strings
-    # for invalid in invalid_strings:
-    #     if re.fullmatch(pattern, invalid):
-    #         return ""  # Return empty if an invalid string matches
 
-    return pattern
+    #Check pattern with valid strings and invalid strings
+    if(checkValidity(patternTest= pattern)):
+     return pattern  
 
 #Print Gree Expression
 result = generate_gree_expression(validStrings, invalidStrings)
