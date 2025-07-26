@@ -11,9 +11,11 @@ import re
 # validStrings= ["abc1", "bbb1", "ccc1"]
 # invalidStrings= ["abc", "bbb", "ccc"]
 #Scroll Test 4
-
-
+# validStrings= ["abc-1", "bbb-1", "cde-1"]
+# invalidStrings= ["abc1", "bbb1", "cde1"]
 #Scroll Test 5
+validStrings= ["foo@abc.com", "bar@def.net"]
+invalidStrings= ["baz@abc", "qux.com"]
 
 def makePattern(myContainer:str):
     #Return String
@@ -92,6 +94,17 @@ def generate_gree_expression(valid_strings, invalid_strings):
               )):
             container += myString[index]
             print("3rd type: My container is " + container + " at index: " + str(index))
+        
+        #If item type is not alphabetics or digit
+        else:
+             #Make new character everytime doesn't match
+            print("Before 4th type: My container is " + container + " at index: " + str(index))
+            pattern += makePattern(myContainer= container)
+            #Clear container once function has been made & container cleared
+            container = ""
+            #Add the new not same character to container
+            container += myString[index]
+            print("After 4th type: My container is " + container + " at index: " + str(index))
 
         
     
