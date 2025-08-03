@@ -14,8 +14,8 @@ import re
 # validStrings= ["abc-1", "bbb-1", "cde-1"]
 # invalidStrings= ["abc1", "bbb1", "cde1"]
 #Scroll Test 5
-validStrings= ["a123", "b234"]
-invalidStrings= ["1234", "5678"]
+# validStrings= ["a123", "b234"]
+# invalidStrings= ["1234", "5678"]
 
 def makePattern(myContainer:str):
     #Return String
@@ -65,10 +65,13 @@ def matchPattern(myPattern:str, currentString:str):
 
     #If itemString match the string compiled from myPattern, this mean pattern is valid
     if(myString == currentString):
+        print(myString + " match!")
         return True
+    else:
+        print(myString + "doesn't match currentString")
 
 def checkValidity(patternTest: str):
-# patterntest is currently effectively just the final pattern
+    # patterntest is currently effectively just the final pattern
     validStringState = False
     invalidStringState = True
 
@@ -82,14 +85,20 @@ def checkValidity(patternTest: str):
         validStringState = matchPattern(myPattern= patternTest, 
                                         currentString= validStrings[index])
         if not validStringState:
+            # This means that if validStringState is "False" then it breaks the loop so that the variable
+            # won't be rewritten as true later on
+            print("validStringState found INVALID at " + index)
             break
-        # this means that if validStringState is "False" then it breaks the loop so that the variable
-        # won't be rewritten as true later on
+        
     # this is the same for loop but for invalidstring
     for index in range(len(invalidStrings)):
         invalidStringState = (matchPattern(myPattern= patternTest,
                                           currentString= invalidStrings[index]))
+        print("Current invalidStringState at index %s " %str(index) + "is " + str(invalidStringState))
         if invalidStringState:
+            # This means that if invalidStringState is "True" then it breaks the loop so that the variable
+            # won't be rewritten as false later on
+            print("invalidString break at index = " + str(index))
             break
 
     #For debugging
@@ -130,16 +139,15 @@ def generate_gree_expression(valid_strings, invalid_strings):
              (str(myString[index]).isalpha() != str(myString[index-1]).isalpha()
               and str(myString[index]).isdigit() != str(myString[index-1]).isdigit()
               )):
-            #Make new character everytime doesn't match
+            #Make new character everytime it doesn't match
             print("Before 2nd type: My container is " + container + " at index: " + str(index))
             pattern += makePattern(myContainer= container)
             #Clear container once function has been made & container cleared
             container = ""
-            #Add the new not same character to container
+            #Add the new different character to container
             container += myString[index]
             print("After 2nd type: My container is " + container + " at index: " + str(index))
         
-
         # If item type current and before is same
         elif(index > 0 and 
              (str(myString[index]).isalpha() == str(myString[index-1]).isalpha()
