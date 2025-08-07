@@ -1,9 +1,9 @@
 import re
-#For UBS by Adriel, Benito and Max
+#For UBS by Adriel
 
 #Scroll Test 1
-# validStrings= ["abc", "def"]
-# invalidStrings= ["123", "456"]
+validStrings= ["abc", "def"]
+invalidStrings= ["123", "456"]
 #Scroll Test 2
 # validStrings= ["aaa", "abb", "acc"]
 # invalidStrings= ["bbb", "bcc", "bca"]
@@ -20,8 +20,8 @@ import re
 # validStrings= ["foo@abc.com", "bar@def.net"]
 # invalidStrings= ["baz@abc", "qux.com"]
 #Custom Scroll
-validStrings= ["hello again3", "see you soon1", "take care3"]
-invalidStrings= ["1hello", "2again", "3soon"]
+# validStrings = ["simpletest", "juststrings", "validinput"]
+# invalidStrings = ["simple test", "just@strings", "valid.input"]
 
 currentString = 0
 
@@ -124,6 +124,9 @@ def checkValidity(patternTest: str):
     validStringState = False
     invalidStringState = True
 
+    #Check if patternTest contain certain pattern
+    patternTest = changePattern(currentPattern= patternTest)
+
     #Loop and match each validString & invalidString with pattern
     #It must return true for validstring & for invalidstring
     for index in range(len(validStrings)):
@@ -158,12 +161,31 @@ def checkValidity(patternTest: str):
     #For debugging
     print("My final states are " + str(validStringState) + " and %s" %str(invalidStringState))
     #If validStringState is true and invalidStringState 
-    # is false, return the pattern
-    if(validStringState and not (invalidStringState)):
-        return True
-    else:
-        print("Do recursion to get new pattern")
-        return False
+    # is false, return condition
+    #This will also return patternTest
+     # Return both patternTest and the validity state as a tuple
+    return patternTest, validStringState and not invalidStringState
+
+#Change pattern when pattern received are as shown below
+#This is done to ensure pattern match only alphabets
+def changePattern(currentPattern:str) -> str:
+    if(currentPattern == "^\D+$"):
+        #For debugging
+        print("Pattern has been changed 1")
+        currentPattern = "^[a-zA-Z]+$"
+
+    elif(currentPattern == "^\D+\d$"):
+        #For debugging
+        print("Pattern has been changed 2")
+        currentPattern = "^[a-zA-Z]+\d$"
+
+    elif(currentPattern == "^\D+\d+$"):
+        #For debugging
+        print("Pattern has been changed 3")
+        currentPattern = "^[a-zA-Z]+\d+$"
+
+    #If currentPattern is not "^\D+$, return original version"
+    return currentPattern
 
 #Generate Gree Expression
 def generate_gree_expression(valid_strings, invalid_strings):
@@ -210,7 +232,7 @@ def generate_gree_expression(valid_strings, invalid_strings):
             container += myString[index]
             print("After 2nd type: My container is " + container + " at index: " + str(index))
         
-        # If item type current and before is same
+        # If item type current and before is same (used when it is alphanumeric)
         elif(index > 0 and 
              (str(myString[index]).isalpha() == str(myString[index-1]).isalpha()
               and str(myString[index]).isdigit() == str(myString[index-1]).isdigit()
@@ -257,11 +279,13 @@ def generate_gree_expression(valid_strings, invalid_strings):
     #Lastly add $ in the end
     pattern += "$"
     
-    #Check pattern with valid strings and invalid strings
-    if(checkValidity(patternTest= pattern)):
+    #Check pattern with pattern, valid strings and invalid strings
+    #checkValidity function will return 2 values
+    currentPattern, conditionValue = checkValidity(patternTest= pattern)
+    if(conditionValue):
         #Clean pattern if there is a lot of \D+
         # print("Before clean pattern: " + pattern)
-        return pattern
+        return currentPattern
     else:
         pattern = "This pattern " +  str(pattern) + " is completely wrong"
         print(pattern)
